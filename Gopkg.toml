@@ -1,0 +1,74 @@
+# Gopkg.toml example
+#
+# Refer to https://golang.github.io/dep/docs/Gopkg.toml.html
+# for detailed Gopkg.toml documentation.
+#
+# required = ["github.com/user/thing/cmd/thing"]
+# ignored = ["github.com/user/project/pkgX", "bitbucket.org/user/project/pkgA/pkgY"]
+#
+# [[constraint]]
+#   name = "github.com/user/project"
+#   version = "1.0.0"
+#
+# [[constraint]]
+#   name = "github.com/user/project2"
+#   branch = "dev"
+#   source = "github.com/myfork/project2"
+#
+# [[override]]
+#   name = "github.com/x/y"
+#   version = "2.4.0"
+#
+# [prune]
+#   non-go = false
+#   go-tests = true
+#   unused-packages = true
+
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/aristanetworks/goarista"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/btcsuite/btcd"
+
+[[constraint]]
+  name = "github.com/davecgh/go-spew"
+  version = "1.1.1"
+
+[[constraint]]
+  name = "github.com/go-stack/stack"
+  version = "1.8.0"
+
+[[constraint]]
+  name = "github.com/golang/protobuf"
+  version = "1.3.1"
+
+[[constraint]]
+  name = "github.com/hashicorp/golang-lru"
+  version = "0.5.1"
+
+[[constraint]]
+  name = "github.com/syndtr/goleveldb"
+  version = "1.0.0"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/sys"
+
+[[constraint]]
+  branch = "v1"
+  name = "gopkg.in/check.v1"
+
+[[constraint]]
+  name = "gopkg.in/fatih/set.v0"
+  version = "0.2.1"
+
+[[constraint]]
+  branch = "v2"
+  name = "gopkg.in/karalabe/cookiejar.v2"
+
+[prune]
+  go-tests = true
+  unused-packages = true

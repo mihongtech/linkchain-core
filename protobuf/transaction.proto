@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package protobuf;
+
+message Transaction {
+    required bytes data = 1;
+}
+
+message Transactions {
+    repeated Transaction txs = 1;
+}
