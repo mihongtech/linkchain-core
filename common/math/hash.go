@@ -26,15 +26,6 @@ var ErrHashStrSize = fmt.Errorf("max hash string length is %v bytes", MaxHashStr
 // typically represents the double sha256 of data.
 type Hash [HashSize]byte
 
-// String returns the Hash as the hexadecimal string of the byte-reversed
-// hash.
-func (hash Hash) String() string {
-	for i := 0; i < HashSize/2; i++ {
-		hash[i], hash[HashSize-1-i] = hash[HashSize-1-i], hash[i]
-	}
-	return hex.EncodeToString(hash[:])
-}
-
 func (hash Hash) GetString() string {
 	for i := 0; i < HashSize/2; i++ {
 		hash[i], hash[HashSize-1-i] = hash[HashSize-1-i], hash[i]
@@ -165,6 +156,27 @@ func (hash *Hash) Deserialize(s serialize.SerializeStream) error {
 	h := *s.(*protobuf.Hash)
 	hash.SetBytes(h.Data)
 	return nil
+}
+
+// String returns the Hash as the hexadecimal string of the byte-reversed
+// hash.
+func (hash Hash) String() string {
+	for i := 0; i < HashSize/2; i++ {
+		hash[i], hash[HashSize-1-i] = hash[HashSize-1-i], hash[i]
+	}
+	return hex.EncodeToString(hash[:])
+}
+
+func (hash *Hash) EncodeToBytes() ([]byte, error) {
+	return proto.Marshal(hash.Serialize())
+}
+
+func (hash *Hash) DecodeFromBytes(buff []byte) error {
+	var protoHash protobuf.Hash
+	if err := proto.Unmarshal(buff, &protoHash); err != nil {
+		return err
+	}
+	return hash.Deserialize(&protoHash)
 }
 
 func (hash *Hash) ToString() string {

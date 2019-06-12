@@ -17,6 +17,6 @@ type ISerialize interface {
 
 type Codec interface {
 	ISerialize
-	Encode() ([]byte, error)
-	Decode([]byte) error
+	EncodeToBytes() ([]byte, error)
+	DecodeFromBytes([]byte) error
 }

@@ -86,6 +86,18 @@ func (a *Address) Deserialize(s serialize.SerializeStream) error {
 	return a.SetBytes(protoAddress.Data)
 }
 
+func (a *Address) EncodeToBytes() ([]byte, error) {
+	return proto.Marshal(a.Serialize())
+}
+
+func (a *Address) DecodeFromBytes(buff []byte) error {
+	var protoAddress protobuf.Address
+	if err := proto.Unmarshal(buff, &protoAddress); err != nil {
+		return err
+	}
+	return a.Deserialize(&protoAddress)
+}
+
 func (a *Address) SetBytes(b []byte) error {
 	if len(b) > AddressLength {
 		return errors.New("byte's len more than max account length")

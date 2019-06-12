@@ -37,6 +37,18 @@ func (sign *Signature) String() string {
 	return hex.EncodeToString(sign.Code)
 }
 
+func (sign *Signature) EncodeToBytes() ([]byte, error) {
+	return proto.Marshal(sign.Serialize())
+}
+
+func (sign *Signature) DecodeFromBytes(buff []byte) error {
+	var protoSignature protobuf.Signature
+	if err := proto.Unmarshal(buff, &protoSignature); err != nil {
+		return err
+	}
+	return sign.Deserialize(&protoSignature)
+}
+
 func (sign *Signature) Verify(hash []byte, address []byte) error {
 	signer, err := btcec.GetSigner(hash, sign.Code)
 	if err != nil {
