@@ -94,6 +94,18 @@ func (b *Block) String() string {
 	return string(data)
 }
 
+func (b *Block) EncodeToBytes() ([]byte, error) {
+	return proto.Marshal(b.Serialize())
+}
+
+func (b *Block) DecodeFromBytes(buff []byte) error {
+	var protoBlock protobuf.Block
+	if err := proto.Unmarshal(buff, &protoBlock); err != nil {
+		return err
+	}
+	return b.Deserialize(&protoBlock)
+}
+
 func (b *Block) GetTxs() []Transaction {
 	return b.TXs.Txs
 }
@@ -259,6 +271,18 @@ func (bh *BlockHeader) String() string {
 		return err.Error()
 	}
 	return string(data)
+}
+
+func (bh *BlockHeader) EncodeToBytes() ([]byte, error) {
+	return proto.Marshal(bh.Serialize())
+}
+
+func (bh *BlockHeader) DecodeFromBytes(buff []byte) error {
+	var protoBlockHeader protobuf.BlockHeader
+	if err := proto.Unmarshal(buff, &protoBlockHeader); err != nil {
+		return err
+	}
+	return bh.Deserialize(&protoBlockHeader)
 }
 
 func (bh *BlockHeader) IsGensis() bool {
