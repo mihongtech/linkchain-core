@@ -1,7 +1,9 @@
 package node
 
 import (
+	"github.com/mihongtech/linkchain-core/common/math"
 	"github.com/mihongtech/linkchain-core/core/meta"
+	"github.com/mihongtech/linkchain-core/node/chain/storage"
 	"github.com/mihongtech/linkchain-core/node/event"
 	"github.com/mihongtech/linkchain-core/node/net/p2p/discover"
 	"github.com/mihongtech/linkchain-core/node/net/p2p/peer"
@@ -51,11 +53,20 @@ func (c *CoreAPI) RemovePeer(node *discover.Node) {
 	c.node.p2pSvc.RemovePeer(node)
 }
 
-/**ProcessTx inteface**/
+/**Tx inteface**/
 func (c *CoreAPI) ProcessTx(tx *meta.Transaction) error {
 	if err := c.node.txPool.ProcessTx(tx); err != nil {
 		return err
 	}
 	c.node.newTxEvent.Send(event.TxEvent{tx})
 	return nil
+}
+
+func (c *CoreAPI) GetTXByID(id meta.TxID) (*meta.Transaction, meta.BlockID, uint64, uint64) {
+	tx, blockId, number, index := storage.GetTransaction(c.node.db, id)
+	if tx == nil {
+		return nil, math.Hash{}, 0, 0
+	} else {
+		return tx, blockId, number, index
+	}
 }
