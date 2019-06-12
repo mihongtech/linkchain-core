@@ -162,7 +162,8 @@ func NewP2P(cfg config.BaseConfig) *Service {
 
 func (srv *Service) Setup(i interface{}) bool {
 	log.Info("p2p service setup...")
-	return srv.sync.Setup(i)
+	cfg := i.(*Config)
+	return srv.sync.Setup(&cfg.Config)
 }
 
 func (srv *Service) NodeKey(keyfile string) *ecdsa.PrivateKey {

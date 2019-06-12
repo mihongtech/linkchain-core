@@ -4,6 +4,7 @@ import (
 	"github.com/mihongtech/linkchain-core/common/math"
 	"github.com/mihongtech/linkchain-core/core/meta"
 	"github.com/mihongtech/linkchain-core/node/chain/storage"
+	"github.com/mihongtech/linkchain-core/node/config"
 	"github.com/mihongtech/linkchain-core/node/event"
 	"github.com/mihongtech/linkchain-core/node/net/p2p/discover"
 	"github.com/mihongtech/linkchain-core/node/net/p2p/peer"
@@ -19,6 +20,19 @@ func NewPublicCoreAPI(node *Node) *CoreAPI {
 }
 
 /**chainReader inteface**/
+
+func (c *CoreAPI) HasBlock(hash meta.BlockID) bool {
+	return c.node.blockchain.HasBlock(hash)
+}
+
+func (c *CoreAPI) GetHeader(hash math.Hash, height uint64) *meta.BlockHeader {
+	return c.node.blockchain.GetHeader(hash, height)
+}
+
+func (c *CoreAPI) GetChainConfig() *config.ChainConfig {
+	return c.node.blockchain.GetChainConfig()
+}
+
 func (c *CoreAPI) GetBestBlock() *meta.Block {
 	return c.node.blockchain.GetBestBlock()
 }
@@ -27,8 +41,8 @@ func (c *CoreAPI) GetBlockNumber(id meta.BlockID) uint64 {
 	return c.node.blockchain.GetBlockNumber(id)
 }
 
-func (c *CoreAPI) GetBlockByID(id meta.BlockID) (*meta.Block, error) {
-	return c.node.blockchain.GetBlockByID(id)
+func (c *CoreAPI) GetBlockByID(hash meta.BlockID) (*meta.Block, error) {
+	return c.node.blockchain.GetBlockByID(hash)
 }
 
 func (c *CoreAPI) GetBlockByHeight(height uint32) (*meta.Block, error) {

@@ -48,19 +48,19 @@ func NewPoa(chainConfig *config.ChainConfig, db lcdb.Database) *Poa {
 }
 
 func (p *Poa) Setup(i interface{}) bool {
-	p.Setup(i)
-	return true
+	p.chain = i.(*Config).chain
+	return p.miner.Setup(i)
 }
 
 func (p *Poa) Start() bool {
 	log.Info("Consensus POA start...")
-	p.Start()
-	return true
+
+	return p.miner.Start()
 }
 
 func (p *Poa) Stop() {
 	log.Info("Consensus POA stop...")
-	p.Stop()
+	p.miner.Stop()
 }
 
 func (p *Poa) Author(header *meta.BlockHeader) ([]byte, error) {
@@ -97,7 +97,7 @@ func (p *Poa) CheckBlock(block *meta.Block) error {
 
 //ProcessBlock Verify Block with POA.Block
 func (p *Poa) ProcessBlock(block *meta.Block) error {
-	signerIndex := block.GetHeight() % uint32(len(config.SignMiners))
+	/*signerIndex := block.GetHeight() % uint32(len(config.SignMiners))
 	miner, err := hex.DecodeString(config.SignMiners[signerIndex])
 	if err != nil {
 		return err
@@ -110,7 +110,7 @@ func (p *Poa) ProcessBlock(block *meta.Block) error {
 	accountID := meta.NewAddress(pubkey)
 	if accountID.IsEqual(meta.BytesToAddress(miner)) {
 		return nil
-	}
+	}*/
 
 	//TODO return nil for miner is incomplete
 	return nil

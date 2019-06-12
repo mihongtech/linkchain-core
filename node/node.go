@@ -85,12 +85,12 @@ func (n *Node) Setup(i interface{}) bool {
 	n.db = s.GetDB()
 
 	chainCfg, genesisHash, err := n.initGenesis(n.db, n.cfg.GenesisPath)
+	//BCSI
+	n.bcsiAPI = n.cfg.BcsiAPI
 
 	//consensus
 	n.engine = poa.NewPoa(chainCfg, s.GetDB())
 
-	//BCSI
-	n.bcsiAPI = n.cfg.BcsiAPI
 	//chain
 	n.blockchain, err = chain.NewBlockChain(s.GetDB(), genesisHash, nil, chainCfg, n.bcsiAPI, n.engine)
 	if err != nil {
@@ -101,6 +101,10 @@ func (n *Node) Setup(i interface{}) bool {
 	//tx pool
 	n.txPool = pool.NewTxPool(n.bcsiAPI)
 	n.txPool.SetUp(i)
+
+	//Consensus setup
+	consensusCfg := poa.NewConfig(n.blockchain, n.txPool, n.bcsiAPI)
+	n.engine.Setup(consensusCfg)
 
 	//p2p init
 	p2pCfg := p2p.NewConfig(n.blockchain, n.txPool, 0, n.newBlockEvent, n.newTxEvent)

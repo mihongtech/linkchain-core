@@ -632,7 +632,7 @@ func (bc *ChainImpl) insertChain(chain *meta.Block) ([]interface{}, error) {
 
 		events = append(events, meta.ChainEvent{chain, *chain.GetBlockID()})
 		lastCanon = chain
-
+		bc.bcsiAPI.UpdateChain(chain)
 		// Only count canonical blocks for GC processing time
 
 	case SideStatTy:

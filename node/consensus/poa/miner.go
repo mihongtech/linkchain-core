@@ -13,6 +13,16 @@ import (
 	"github.com/mihongtech/linkchain-core/node/pool"
 )
 
+type Config struct {
+	chain   chain.Chain
+	txPool  pool.TxPool
+	bcsiAPI bcsi.BCSI
+}
+
+func NewConfig(chain chain.Chain, txPool pool.TxPool, bcsiAPI bcsi.BCSI) *Config {
+	return &Config{chain, txPool, bcsiAPI}
+}
+
 type Miner struct {
 	poa      *Poa
 	chain    chain.Chain
@@ -27,6 +37,10 @@ func NewMiner(poa *Poa) *Miner {
 }
 
 func (m *Miner) Setup(i interface{}) bool {
+	cfg := i.(*Config)
+	m.chain = cfg.chain
+	m.txPool = cfg.txPool
+	m.bcsiAPI = cfg.bcsiAPI
 	return true
 }
 
@@ -85,6 +99,7 @@ func (m *Miner) MineBlock() (*meta.Block, error) {
 	err = m.chain.ProcessBlock(block)
 	if err != nil {
 		m.removeBlockTxs(block)
+		log.Error("Miner", "ProcessBlocks error", err)
 		return nil, err
 	}
 
