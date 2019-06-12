@@ -11,9 +11,6 @@ import (
 	"github.com/mihongtech/linkchain-core/common/util/log"
 	"github.com/mihongtech/linkchain-core/core/meta"
 	"github.com/mihongtech/linkchain-core/node/config"
-	"github.com/mihongtech/linkchain-core/protobuf"
-
-	"github.com/golang/protobuf/proto"
 )
 
 // DatabaseReader wraps the Get method of a backing data store.
@@ -133,13 +130,8 @@ func GetBlock(db DatabaseReader, hash math.Hash, number uint64) *meta.Block {
 	if len(data) == 0 {
 		return nil
 	}
-	var b protobuf.Block
-	if err := proto.Unmarshal(data, &b); err != nil {
-		log.Error("decode block failed")
-		return nil
-	}
 	block := &meta.Block{}
-	block.Deserialize(&b)
+	block.DecodeFromBytes(data)
 	return block
 }
 
@@ -210,9 +202,7 @@ func WriteHeadFastBlockHash(db lcdb.Putter, hash math.Hash) error {
 
 // WriteBlock serializes a block into the database, header and body separately.
 func WriteBlock(db lcdb.Putter, block *meta.Block) error {
-
-	data := block.Serialize()
-	bytesData, err := proto.Marshal(data)
+	bytesData, err := block.EncodeToBytes()
 	if err != nil {
 		return err
 	}
