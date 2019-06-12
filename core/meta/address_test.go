@@ -18,7 +18,7 @@ package meta
 //Create Account for test.
 func getTestAccount() *Account {
 	ex, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	utxos := make([]UTXO, 0)
 	c := NewClearTime(0, 0)
 	testAccount := NewAccount(*id, config.NormalAccount, utxos, c, *id)
@@ -131,7 +131,7 @@ func TestAccount_IsCanSetClearTime(t *testing.T) {
 func TestAccount_CheckFromCoin(t *testing.T) {
 	account := getTestAccount()
 	ex, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("5e6e12fc6cddbcdac39a9b265402960473fd2640a65ef32e558f89b47be40f64")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)
@@ -146,7 +146,7 @@ func TestAccount_CheckFromCoin(t *testing.T) {
 func TestAccount_CheckFromCoin2(t *testing.T) {
 	account := getTestAccount()
 	ex, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("3361426edc0980b83404e2f5927d6579040fa26958d77cd5e35bc1fd1e084cf5")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)
@@ -161,7 +161,7 @@ func TestAccount_CheckFromCoin2(t *testing.T) {
 func TestAccount_CheckFromCoin3(t *testing.T) {
 	account := getTestAccount()
 	ex, _ := btcec.NewPrivateKey(btcec.S256())
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("3361426edc0980b83404e2f5927d6579040fa26958d77cd5e35bc1fd1e084cf5")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)
@@ -194,7 +194,7 @@ func TestAccount_IsFromEffect(t *testing.T) {
 	account := getTestAccount()
 	//correct fc
 	ex, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("5e6e12fc6cddbcdac39a9b265402960473fd2640a65ef32e558f89b47be40f64")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)
@@ -207,7 +207,7 @@ func TestAccount_IsFromEffect(t *testing.T) {
 
 	//error fc account
 	ex1, _ := btcec.NewPrivateKey(btcec.S256())
-	id1 := NewAccountId(ex1.PubKey())
+	id1 := NewAddress(ex1.PubKey())
 	txid1, _ := math.NewHashFromStr("5e6e12fc6cddbcdac39a9b265402960473fd2640a65ef32e558f89b47be40f64")
 	ticket1 := NewTicket(*txid1, 0)
 	tickets1 := make([]Ticket, 0)
@@ -221,7 +221,7 @@ func TestAccount_IsFromEffect(t *testing.T) {
 	//err fc ticket but correct fc account
 	//correct fc
 	ex2, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id2 := NewAccountId(ex2.PubKey())
+	id2 := NewAddress(ex2.PubKey())
 	txid2, _ := math.NewHashFromStr("3361426edc0980b83404e2f5927d6579040fa26958d77cd5e35bc1fd1e084cf5")
 	ticket2 := NewTicket(*txid2, 0)
 	tickets2 := make([]Ticket, 0)
@@ -239,7 +239,7 @@ func TestAccount_IsFromEffect2(t *testing.T) {
 	account.UTXOs[0].EffectHeight += config.DefaultDelayTime
 	//correct fc
 	ex, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("5e6e12fc6cddbcdac39a9b265402960473fd2640a65ef32e558f89b47be40f64")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)
@@ -255,7 +255,7 @@ func TestAccount_IsFromEffect2(t *testing.T) {
 
 	//error fc account
 	ex1, _ := btcec.NewPrivateKey(btcec.S256())
-	id1 := NewAccountId(ex1.PubKey())
+	id1 := NewAddress(ex1.PubKey())
 	txid1, _ := math.NewHashFromStr("5e6e12fc6cddbcdac39a9b265402960473fd2640a65ef32e558f89b47be40f64")
 	ticket1 := NewTicket(*txid1, 0)
 	tickets1 := make([]Ticket, 0)
@@ -272,7 +272,7 @@ func TestAccount_IsFromEffect2(t *testing.T) {
 	//err fc ticket but correct fc account
 	//correct fc
 	ex2, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id2 := NewAccountId(ex2.PubKey())
+	id2 := NewAddress(ex2.PubKey())
 	txid2, _ := math.NewHashFromStr("3361426edc0980b83404e2f5927d6579040fa26958d77cd5e35bc1fd1e084cf5")
 	ticket2 := NewTicket(*txid2, 0)
 	tickets2 := make([]Ticket, 0)
@@ -291,7 +291,7 @@ func TestAccount_RemoveUTXOByFromCoin(t *testing.T) {
 	account := getTestAccount()
 	//correct fc
 	ex, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("5e6e12fc6cddbcdac39a9b265402960473fd2640a65ef32e558f89b47be40f64")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)
@@ -306,7 +306,7 @@ func TestAccount_RemoveUTXOByFromCoin_Error_Ticket(t *testing.T) {
 	account := getTestAccount()
 	//correct fc
 	ex, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("3361426edc0980b83404e2f5927d6579040fa26958d77cd5e35bc1fd1e084cf5")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)
@@ -321,7 +321,7 @@ func TestAccount_RemoveUTXOByFromCoin_Error_Account(t *testing.T) {
 	account := getTestAccount()
 	//correct fc
 	ex, _ := btcec.NewPrivateKey(btcec.S256())
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("5e6e12fc6cddbcdac39a9b265402960473fd2640a65ef32e558f89b47be40f64")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)
@@ -490,7 +490,7 @@ func TestAccount_GetAmount(t *testing.T) {
 func TestAccount_GetFromCoinValue_Null(t *testing.T) {
 	account := getTestAccount()
 	ex, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("3361426edc0980b83404e2f5927d6579040fa26958d77cd5e35bc1fd1e084cf5")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)
@@ -503,7 +503,7 @@ func TestAccount_GetFromCoinValue_Null(t *testing.T) {
 func TestAccount_GetFromCoinValue(t *testing.T) {
 	account := getTestAccount()
 	ex, _ := btcec.PrivKeyFromBytes(btcec.S256(), testPri)
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("5e6e12fc6cddbcdac39a9b265402960473fd2640a65ef32e558f89b47be40f64")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)
@@ -517,7 +517,7 @@ func TestAccount_GetFromCoinValue(t *testing.T) {
 func TestAccount_GetFromCoinValue_Error_Account(t *testing.T) {
 	account := getTestAccount()
 	ex, _ := btcec.NewPrivateKey(btcec.S256())
-	id := NewAccountId(ex.PubKey())
+	id := NewAddress(ex.PubKey())
 	txid, _ := math.NewHashFromStr("5e6e12fc6cddbcdac39a9b265402960473fd2640a65ef32e558f89b47be40f64")
 	ticket := NewTicket(*txid, 0)
 	tickets := make([]Ticket, 0)

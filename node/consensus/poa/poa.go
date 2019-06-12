@@ -114,7 +114,7 @@ func (p *Poa) ProcessBlock(block *meta.Block) error {
 
 	//TODO return nil for miner is incomplete
 	return nil
-	//return errors.New(fmt.Sprintf("Verify seal failed %s\n, want %s\n", accountID.String(), meta.BytesToAccountID(miner).String()))
+	//return errors.New(fmt.Sprintf("Verify seal failed %s\n, want %s\n", accountID.String(), meta.BytesToAddress(miner).String()))
 }
 
 func (p *Poa) getBlockSigner(block *meta.Block) meta.Address {

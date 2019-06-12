@@ -124,7 +124,7 @@ func (k *Key) UnmarshalJSON(j []byte) (err error) {
 	if !bytes.Equal(addr, publickey.SerializeCompressed()) {
 		return errors.New("the address of privkey is not the address of Key")
 	}
-	k.Address = *meta.NewAccountId(publickey)
+	k.Address = *meta.NewAddress(publickey)
 	k.PrivateKey = privkey
 
 	return nil
@@ -134,7 +134,7 @@ func newKeyFromECDSA(privateKeyECDSA *btcec.PrivateKey) *Key {
 	id := uuid.NewRandom()
 	key := &Key{
 		Id:         id,
-		Address:    *meta.NewAccountId(privateKeyECDSA.PubKey()),
+		Address:    *meta.NewAddress(privateKeyECDSA.PubKey()),
 		PrivateKey: privateKeyECDSA,
 	}
 	return key

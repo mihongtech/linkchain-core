@@ -35,7 +35,7 @@ func TestKeyEncryptDecrypt(t *testing.T) {
 	password := ""
 	pb, _ := hex.DecodeString("02ed6749d314c2e725f1d23d250b4a041ea9c6369594b4f55500d7db41746cdf50")
 	key, err := btcec.ParsePubKey(pb, btcec.S256())
-	address := meta.NewAccountId(key)
+	address := meta.NewAddress(key)
 
 	// Do a few rounds of decryption and encryption
 	for i := 0; i < 3; i++ {

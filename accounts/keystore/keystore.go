@@ -285,8 +285,10 @@ func (ks *KeyStore) SignTx(a accounts.Account, tx *meta.Transaction, chainID *bi
 	if err != nil {
 		return nil, err
 	}
-	signature := meta.NewSignature(sign)
-	tx.AddSignature(signature)
+	//TODO need remove signTx
+	meta.NewSignature(sign)
+	//signature := meta.NewSignature(sign)
+	//tx.AddSignature(signature)
 	return tx, nil
 }
 
@@ -320,8 +322,10 @@ func (ks *KeyStore) SignTxWithPassphrase(a accounts.Account, passphrase string, 
 	if err != nil {
 		return nil, err
 	}
-	signature := meta.NewSignature(sign)
-	tx.AddSignature(signature)
+	//TODO need remove signTx
+	meta.NewSignature(sign)
+	//signature := meta.NewSignature(sign)
+	//tx.AddSignature(signature)
 	return tx, nil
 }
 
