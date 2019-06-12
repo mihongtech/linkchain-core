@@ -61,8 +61,12 @@ func (m *Miner) MineBlock() (*meta.Block, error) {
 		return nil, errors.New("current block is not block prev")
 	}
 
-	block.Header.Status = m.bcsiAPI.GetBlockState(*best.GetBlockID()) //The block status is prev block status
-
+	block.Header.Status, err = m.bcsiAPI.GetBlockState(*best.GetBlockID()) //The block status is prev block status
+	if err != nil {
+		log.Error("Miner", "Get Last Block State error", err)
+		m.removeBlockTxs(block)
+		return nil, err
+	}
 	block, err = RebuildBlock(block)
 	if err != nil {
 		log.Error("Miner", "Rebuild Block error", err)
