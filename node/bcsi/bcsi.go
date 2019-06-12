@@ -7,7 +7,7 @@ import (
 //app provide to core for querying information
 type Querier interface {
 	//app provide
-	GetBlockState(id meta.BlockID) meta.TreeID
+	GetBlockState(id meta.BlockID) (meta.TreeID, error)
 }
 
 //app provide to core for notifying app to update app state
