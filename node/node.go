@@ -103,7 +103,7 @@ func (n *Node) Setup(i interface{}) bool {
 	n.txPool.SetUp(i)
 
 	//Consensus setup
-	consensusCfg := poa.NewConfig(n.blockchain, n.txPool, n.bcsiAPI)
+	consensusCfg := poa.NewConfig(n.blockchain, n.txPool, n.bcsiAPI, n.newBlockEvent)
 	n.engine.Setup(consensusCfg)
 
 	//p2p init

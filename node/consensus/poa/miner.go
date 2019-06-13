@@ -2,7 +2,9 @@ package poa
 
 import (
 	"errors"
+	"github.com/mihongtech/linkchain-core/common/util/event"
 	"github.com/mihongtech/linkchain-core/node/config"
+	event2 "github.com/mihongtech/linkchain-core/node/event"
 	"sync"
 	"time"
 
@@ -14,22 +16,24 @@ import (
 )
 
 type Config struct {
-	chain   chain.Chain
-	txPool  pool.TxPool
-	bcsiAPI bcsi.BCSI
+	chain         chain.Chain
+	txPool        pool.TxPool
+	bcsiAPI       bcsi.BCSI
+	newBlockEvent *event.TypeMux
 }
 
-func NewConfig(chain chain.Chain, txPool pool.TxPool, bcsiAPI bcsi.BCSI) *Config {
-	return &Config{chain, txPool, bcsiAPI}
+func NewConfig(chain chain.Chain, txPool pool.TxPool, bcsiAPI bcsi.BCSI, newBlockEvent *event.TypeMux) *Config {
+	return &Config{chain, txPool, bcsiAPI, newBlockEvent}
 }
 
 type Miner struct {
-	poa      *Poa
-	chain    chain.Chain
-	txPool   pool.TxPool
-	bcsiAPI  bcsi.BCSI
-	isMining bool
-	minerMtx sync.Mutex
+	poa           *Poa
+	chain         chain.Chain
+	txPool        pool.TxPool
+	bcsiAPI       bcsi.BCSI
+	isMining      bool
+	minerMtx      sync.Mutex
+	newBlockEvent *event.TypeMux
 }
 
 func NewMiner(poa *Poa) *Miner {
@@ -41,6 +45,7 @@ func (m *Miner) Setup(i interface{}) bool {
 	m.chain = cfg.chain
 	m.txPool = cfg.txPool
 	m.bcsiAPI = cfg.bcsiAPI
+	m.newBlockEvent = cfg.newBlockEvent
 	return true
 }
 
@@ -102,7 +107,7 @@ func (m *Miner) MineBlock() (*meta.Block, error) {
 		log.Error("Miner", "ProcessBlocks error", err)
 		return nil, err
 	}
-
+	m.newBlockEvent.Post(event2.NewMinedBlockEvent{Block: block})
 	return block, nil
 }
 
