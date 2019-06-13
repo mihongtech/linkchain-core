@@ -22,7 +22,7 @@ func (t *Transaction) Deserialize(s serialize.SerializeStream) error {
 	protoTransaction := s.(*protobuf.Transaction)
 	buffer := protoTransaction.Data
 	t.Data = make([]byte, 0)
-	copy(t.Data, buffer)
+	t.Data = append(t.Data, buffer...)
 	return nil
 }
 
