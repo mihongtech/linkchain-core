@@ -60,7 +60,6 @@ type Node struct {
 
 func NewNode(cfg config.BaseConfig) *Node {
 	n := &Node{
-		p2pSvc:      p2p.NewP2P(cfg),
 		MainChainCh: make(chan meta.ChainEvent, 10),
 		SideChainCh: make(chan meta.ChainSideEvent, 10)}
 	//Event
@@ -83,6 +82,8 @@ func (n *Node) Setup(i interface{}) bool {
 		return false
 	}
 	n.db = s.GetDB()
+
+	n.p2pSvc = p2p.NewP2P(n.cfg.BaseConfig)
 
 	chainCfg, genesisHash, err := n.initGenesis(n.db, n.cfg.GenesisPath)
 	//BCSI
