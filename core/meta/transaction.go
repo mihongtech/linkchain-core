@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"github.com/golang/protobuf/proto"
 	"github.com/mihongtech/linkchain-core/common/math"
 	"github.com/mihongtech/linkchain-core/common/serialize"
 	"github.com/mihongtech/linkchain-core/protobuf"
@@ -28,6 +29,18 @@ func (t *Transaction) Deserialize(s serialize.SerializeStream) error {
 
 func (t *Transaction) String() string {
 	return hex.EncodeToString(t.Data)
+}
+
+func (t *Transaction) EncodeToBytes() ([]byte, error) {
+	return proto.Marshal(t.Serialize())
+}
+
+func (t *Transaction) DecodeFromBytes(buff []byte) error {
+	var protoTransaction protobuf.Transaction
+	if err := proto.Unmarshal(buff, &protoTransaction); err != nil {
+		return err
+	}
+	return t.Deserialize(&protoTransaction)
 }
 
 func (t Transaction) GetTxID() *TxID {
@@ -69,6 +82,18 @@ func (ts *Transactions) Deserialize(s serialize.SerializeStream) error {
 		ts.Txs = append(ts.Txs, tx)
 	}
 	return nil
+}
+
+func (ts *Transactions) EncodeToBytes() ([]byte, error) {
+	return proto.Marshal(ts.Serialize())
+}
+
+func (ts *Transactions) DecodeFromBytes(buff []byte) error {
+	var protoTransactions protobuf.Transactions
+	if err := proto.Unmarshal(buff, &protoTransactions); err != nil {
+		return err
+	}
+	return ts.Deserialize(&protoTransactions)
 }
 
 func (ts *Transactions) String() string {

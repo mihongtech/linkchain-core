@@ -11,13 +11,13 @@ import (
 
 func main() {
 	httpConfig := server.NewConfig(time.Now().Unix(), "localhost:8081", "mihongtech", "mihongtech")
-	rpcServe, err := server.NewRPCServer(httpConfig)
+	rpcServe, err := server.NewRPCServer(httpConfig, nil)
 	if err != nil {
 		fmt.Printf("start rpc server:%s", err)
 		return
 	}
-	server.SetHandleFunc("getinfo", getinfo)
-	server.SetCmd("getinfo", reflect.TypeOf((*example.InfoCmd)(nil)))
+	rpcServe.SetHandleFunc("getinfo", getinfo)
+	rpcServe.SetCmd("getinfo", reflect.TypeOf((*example.InfoCmd)(nil)))
 	rpcServe.Start()
 
 	select {

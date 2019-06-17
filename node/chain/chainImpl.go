@@ -187,7 +187,7 @@ func (bc *ChainImpl) loadLastChain() error {
 	log.Info("Loaded most recent local full block", "number", currentBlock.GetHeight(), "hash", currentBlock.GetBlockID())
 
 	//TODO the core best block should not be influence app best status.
-	if err := bc.bcsiAPI.UpdateChain(currentBlock); err != nil {
+	if err := bc.bcsiAPI.UpdateChain(*currentBlock); err != nil {
 		return err
 	}
 	return nil
@@ -616,7 +616,7 @@ func (bc *ChainImpl) insertChain(chain *meta.Block) ([]interface{}, error) {
 
 	// BCSI:Process block to app
 
-	if err = bc.bcsiAPI.ProcessBlock(chain); err != nil {
+	if err = bc.bcsiAPI.ProcessBlock(*chain); err != nil {
 		bc.reportBlock(chain, err)
 		return events, err
 	}
@@ -632,7 +632,7 @@ func (bc *ChainImpl) insertChain(chain *meta.Block) ([]interface{}, error) {
 
 		events = append(events, meta.ChainEvent{chain, *chain.GetBlockID()})
 		lastCanon = chain
-		bc.bcsiAPI.UpdateChain(chain)
+		bc.bcsiAPI.UpdateChain(*chain)
 		// Only count canonical blocks for GC processing time
 
 	case SideStatTy:
@@ -800,7 +800,7 @@ func (bc *ChainImpl) CheckBlock(block *meta.Block) error {
 	}
 
 	//App
-	if err := bc.bcsiAPI.CheckBlock(block); err != nil {
+	if err := bc.bcsiAPI.CheckBlock(*block); err != nil {
 		return err
 	}
 

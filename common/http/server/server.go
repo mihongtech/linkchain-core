@@ -13,7 +13,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/mihongtech/appchain/rpc/rpcjson"
+	"github.com/mihongtech/linkchain-core/common/http/rpcjson"
 	"github.com/mihongtech/linkchain-core/common/util/log"
 )
 
@@ -34,6 +34,10 @@ type Server struct {
 
 	statusLines map[int]string
 	statusLock  sync.RWMutex
+
+	handlerPool map[string]commandHandler
+	cmdPool     map[string]reflect.Type
+	Context     interface{}
 	//quit channel
 	requestProcessShutdown chan struct{}
 }
@@ -59,11 +63,14 @@ func NewConfig(startupTime int64, addr string, rpcuser string, password string) 
 }
 
 // newRPCServer returns a new instance of the rpcServer struct.
-func NewRPCServer(cfg *Config) (*Server, error) {
+func NewRPCServer(cfg *Config, context interface{}) (*Server, error) {
 	rpc := Server{
 		config:                 *cfg,
 		statusLines:            make(map[int]string),
 		requestProcessShutdown: make(chan struct{}),
+		handlerPool:            make(map[string]commandHandler),
+		cmdPool:                make(map[string]reflect.Type),
+		Context:                context,
 	}
 
 	return &rpc, nil
@@ -191,7 +198,7 @@ func (s *Server) jsonRPCRead(w http.ResponseWriter, r *http.Request) {
 		if jsonErr == nil {
 			// Attempt to parse the JSON-RPC request into a known concrete
 			// command.
-			parsedCmd, err := parseCmd(&request)
+			parsedCmd, err := s.parseCmd(&request)
 			if err != nil {
 				jsonErr = err
 			} else {
@@ -244,7 +251,7 @@ func createMarshalledReply(id, result interface{}, replyErr error) ([]byte, erro
 // commands which are not recognized or not implemented will return an error
 // suitable for use in replies.
 func (s *Server) standardCmdResult(method string, cmd interface{}, closeChan <-chan struct{}) (interface{}, error) {
-	handler, ok := handlerPool[method]
+	handler, ok := s.handlerPool[method]
 	if !ok {
 		log.Error("ErrRPCMethodNotFound", method)
 		return nil, rpcjson.ErrRPCMethodNotFound
@@ -257,12 +264,12 @@ func (s *Server) standardCmdResult(method string, cmd interface{}, closeChan <-c
 // err field of the returned parsedRPCCmd struct will contain an RPC error that
 // is suitable for use in replies if the command is invalid in some way such as
 // an unregistered command or invalid parameters.
-func parseCmd(request *rpcjson.Request) (interface{}, error) {
+func (s *Server) parseCmd(request *rpcjson.Request) (interface{}, error) {
 	if request.Params == nil {
 		return nil, nil
 	}
 
-	rtp := cmdPool[request.Method]
+	rtp := s.cmdPool[request.Method]
 	cmd := reflect.New(rtp.Elem()).Interface()
 	err := json.Unmarshal(request.Params, cmd)
 

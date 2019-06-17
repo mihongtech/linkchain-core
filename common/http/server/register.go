@@ -4,21 +4,13 @@ import (
 	"reflect"
 )
 
+/**rpc handler,server,cmd,closeChan,context**/
 type commandHandler func(*Server, interface{}, <-chan struct{}) (interface{}, error)
 
-//handler pool
-var handlerPool = map[string]commandHandler{
-	//"getBlockChainInfo": getBlockChainInfo,
+func (s *Server) SetHandleFunc(method string, handler commandHandler) {
+	s.handlerPool[method] = handler
 }
 
-var cmdPool = map[string]reflect.Type{
-	//"version":    reflect.TypeOf((*rpcobject.VersionCmd)(nil)),
-}
-
-func SetHandleFunc(method string, handler commandHandler) {
-	handlerPool[method] = handler
-}
-
-func SetCmd(method string, cmdType reflect.Type) {
-	cmdPool[method] = cmdType
+func (s *Server) SetCmd(method string, cmdType reflect.Type) {
+	s.cmdPool[method] = cmdType
 }
