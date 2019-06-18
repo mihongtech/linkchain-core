@@ -51,14 +51,16 @@ type Config struct {
 
 	rpcuser  string
 	password string
+	Name     string
 }
 
-func NewConfig(startupTime int64, addr string, rpcuser string, password string) *Config {
+func NewConfig(useAge string, startupTime int64, addr string, rpcuser string, password string) *Config {
 	return &Config{
 		StartupTime: startupTime,
 		Addr:        addr,
 		rpcuser:     rpcuser,
 		password:    password,
+		Name:        useAge,
 	}
 }
 
@@ -78,7 +80,7 @@ func NewRPCServer(cfg *Config, context interface{}) (*Server, error) {
 
 // Start is used by rpcserver.go to start the rpcserver listener.
 func (s *Server) Start() {
-	log.Info("Starting RPC Server")
+	log.Info("RPC Server", "Starting for", s.config.Name)
 	rpcServeMux := http.NewServeMux()
 	httpServer := &http.Server{
 		Addr:    s.config.Addr,
@@ -122,7 +124,7 @@ func (s *Server) jsonRPCRead(w http.ResponseWriter, r *http.Request) {
 	// Read and close the JSON-RPC request body from the caller.
 	body, err := ioutil.ReadAll(r.Body)
 	r.Body.Close()
-	log.Info("rpcServer", "raw", string(body))
+	log.Debug("rpcServer:"+s.config.Name, "raw", string(body))
 	if err != nil {
 		errCode := http.StatusBadRequest
 		http.Error(w, fmt.Sprintf("%d error reading JSON message: %v",

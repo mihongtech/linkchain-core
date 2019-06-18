@@ -1,11 +1,11 @@
 package rpc
 
 import (
+	"reflect"
+
 	"github.com/mihongtech/linkchain-core/common/http/server"
 	"github.com/mihongtech/linkchain-core/common/util/log"
-	"github.com/mihongtech/linkchain-core/core/meta"
 	"github.com/mihongtech/linkchain-core/node/bcsi"
-	"reflect"
 )
 
 type BCSIRPCServer struct {
@@ -30,12 +30,26 @@ func NewBCSIRPCServer(cfg *server.Config, api bcsi.BCSI) (*BCSIRPCServer, error)
 	rpcServer.SetHandleFunc("CheckTx", onCheckTx)
 	rpcServer.SetHandleFunc("FilterTx", onFilterTx)
 	//set cmd
-	rpcServer.SetCmd("GetBlockState", reflect.TypeOf((*meta.BlockID)(nil)))
-	rpcServer.SetCmd("UpdateChain", reflect.TypeOf((*meta.Block)(nil)))
-	rpcServer.SetCmd("ProcessBlock", reflect.TypeOf((*meta.Block)(nil)))
-	rpcServer.SetCmd("Commit", reflect.TypeOf((*meta.BlockID)(nil)))
-	rpcServer.SetCmd("CheckBlock", reflect.TypeOf((*meta.Block)(nil)))
-	rpcServer.SetCmd("CheckTx", reflect.TypeOf((*meta.Transaction)(nil)))
-	rpcServer.SetCmd("FilterTx", reflect.TypeOf(([]meta.Transaction)(nil)))
+	rpcServer.SetCmd("GetBlockState", reflect.TypeOf((*BlockIDCmd)(nil)))
+	rpcServer.SetCmd("UpdateChain", reflect.TypeOf((*BlockCmd)(nil)))
+	rpcServer.SetCmd("ProcessBlock", reflect.TypeOf((*BlockCmd)(nil)))
+	rpcServer.SetCmd("Commit", reflect.TypeOf((*BlockIDCmd)(nil)))
+	rpcServer.SetCmd("CheckBlock", reflect.TypeOf((*BlockCmd)(nil)))
+	rpcServer.SetCmd("CheckTx", reflect.TypeOf((*TransactionCmd)(nil)))
+	rpcServer.SetCmd("FilterTx", reflect.TypeOf((*TransactionsCmd)(nil)))
 	return &BCSIRPCServer{api: api, rpcServer: rpcServer}, nil
+}
+
+func (s *BCSIRPCServer) SetUp(i interface{}) bool {
+	return true
+}
+
+func (s *BCSIRPCServer) Start() bool {
+	s.rpcServer.Start()
+	return true
+}
+
+func (s *BCSIRPCServer) Stop() bool {
+	s.rpcServer.Stop()
+	return true
 }

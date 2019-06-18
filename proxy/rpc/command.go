@@ -9,9 +9,13 @@ type BlockCmd struct {
 }
 
 type TransactionCmd struct {
-	Transaction string `json:"Transaction"`
+	Transaction string `json:"transaction"`
 }
 
 type TransactionsCmd struct {
-	Transactions string `json:"Transactions"`
+	Transactions string `json:"transactions"`
+}
+
+type CommonRSP struct {
+	Data string `json:"data"`
 }
