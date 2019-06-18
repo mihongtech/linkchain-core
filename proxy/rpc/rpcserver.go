@@ -8,12 +8,12 @@ import (
 	"reflect"
 )
 
-type RPCApp struct {
+type BCSIRPCServer struct {
 	api       bcsi.BCSI
 	rpcServer *server.Server
 }
 
-func NewRPCApp(cfg *server.Config, api bcsi.BCSI) (*RPCApp, error) {
+func NewBCSIRPCServer(cfg *server.Config, api bcsi.BCSI) (*BCSIRPCServer, error) {
 	//create rpc server
 	rpcServer, err := server.NewRPCServer(cfg, api)
 	if err != nil {
@@ -37,5 +37,5 @@ func NewRPCApp(cfg *server.Config, api bcsi.BCSI) (*RPCApp, error) {
 	rpcServer.SetCmd("CheckBlock", reflect.TypeOf((*meta.Block)(nil)))
 	rpcServer.SetCmd("CheckTx", reflect.TypeOf((*meta.Transaction)(nil)))
 	rpcServer.SetCmd("FilterTx", reflect.TypeOf(([]meta.Transaction)(nil)))
-	return &RPCApp{api: api, rpcServer: rpcServer}, nil
+	return &BCSIRPCServer{api: api, rpcServer: rpcServer}, nil
 }

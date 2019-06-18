@@ -13,5 +13,5 @@ type TransactionCmd struct {
 }
 
 type TransactionsCmd struct {
-	Transactions []string `json:"Transactions"`
+	Transactions string `json:"Transactions"`
 }
