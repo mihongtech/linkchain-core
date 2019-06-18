@@ -1,4 +1,4 @@
-package proxy
+package local
 
 import (
 	"github.com/mihongtech/linkchain-core/core/meta"
